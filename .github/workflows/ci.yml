@@ -23,8 +23,19 @@ jobs:
       - run: npm ci
       - run: npm run setup
 
-      - name: Start server and run tests
+      - name: Start server
+        run: npm start &
+
+      - name: Wait for server (up to 60s)
         run: |
-          npm start &
-          sleep 30
-          npm test
+          for i in {1..60}; do
+            if curl -sf http://localhost:3000/api/test > /dev/null; then
+              echo "✅ Server is up"; break; fi
+            echo "⏳ Waiting for server ($i/60)..."; sleep 1
+          done
+
+      - name: Verify Cypress binary
+        run: npx cypress verify
+
+      - name: Run Cypress tests
+        run: npm test
