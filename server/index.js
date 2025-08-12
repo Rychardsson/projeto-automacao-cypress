@@ -138,7 +138,7 @@ app.delete("/api/fornecedores/:id", async (req, res) => {
 
 // GET - Endpoint de health check para CI/CD
 app.get("/api/test", (req, res) => {
-  res.json({
+  res.status(200).json({
     message: "Servidor funcionando",
     status: "OK",
     timestamp: new Date().toISOString(),
@@ -214,7 +214,7 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor apenas se executado diretamente
 if (require.main === module) {
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log("🚀 Servidor iniciado com sucesso!");
     console.log(`📍 URL: http://localhost:${PORT}`);
     console.log(`📡 API: http://localhost:${PORT}/api/fornecedores`);
