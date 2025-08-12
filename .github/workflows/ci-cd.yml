@@ -54,13 +54,24 @@ jobs:
       - name: 🚀 Start Application Server
         run: |
           echo "🌐 Starting server..."
+
+          # Check if port 3000 is already in use
+          if netstat -tlnp | grep :3000; then
+            echo "⚠️ Port 3000 is already in use, killing existing process..."
+            sudo kill -9 $(sudo lsof -t -i:3000) || echo "No process to kill"
+          fi
+
+          echo "📂 Checking database before starting server..."
+          ls -la database.sqlite
+
+          echo "🚀 Starting Node.js server..."
           npm start &
           APP_PID=$!
           echo "📝 Server PID: $APP_PID"
           echo $APP_PID > /tmp/server.pid
 
           echo "⏳ Waiting for server to initialize..."
-          sleep 10
+          sleep 15
 
           echo "🔍 Testing server connectivity..."
           for i in {1..30}; do
@@ -69,15 +80,29 @@ jobs:
               break
             else
               echo "❌ Attempt $i/30 failed, retrying in 2s..."
+              if [ $i -eq 15 ]; then
+                echo "🔍 Mid-check diagnostics:"
+                ps aux | grep node | head -5
+                netstat -tlnp | grep :3000 || echo "Port 3000 not listening"
+              fi
               sleep 2
             fi
           done
 
           echo "🧪 Final server test..."
-          curl -f http://localhost:3000/api/test || {
+          if curl -f http://localhost:3000/api/test; then
+            echo "🎉 Server is ready for testing!"
+          else
             echo "💥 ERROR: Server is not responding"
+            echo "🔍 Final diagnostics:"
+            echo "Process status:"
+            ps aux | grep node | head -10
+            echo "Network status:"
+            netstat -tlnp | grep :3000 || echo "Port 3000 not listening"
+            echo "Server logs (if any):"
+            tail -20 /tmp/server.log 2>/dev/null || echo "No server logs found"
             exit 1
-          }
+          fi
 
           echo "🎉 Server is ready for testing!"
 

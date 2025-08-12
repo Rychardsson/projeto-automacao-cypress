@@ -29,35 +29,45 @@ jobs:
       - name: 🗄️ Setup Database
         run: npm run setup
 
-      - name: 🚀 Run Application & Tests
+      - name: 🚀 Start Server & Run Tests
         run: |
-          echo "Starting application server..."
-          npm start &
-          sleep 15
+          echo "🔧 Making script executable..."
+          chmod +x scripts/start-server-ci.sh
 
-          echo "Testing server health..."
-          curl -f http://localhost:3000/api/test
+          echo "� Starting server using CI script..."
+          ./scripts/start-server-ci.sh
 
-          echo "Running Cypress tests..."
-          npx cypress run --browser electron
+          echo "🧪 Running Cypress tests..."
+          npx cypress run \
+            --config baseUrl=http://localhost:3000 \
+            --browser electron \
+            --spec "cypress/e2e/**/*.cy.js"
         env:
           CYPRESS_baseUrl: http://localhost:3000
+          CI: true
 
       - name: 📊 Upload Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: simple-test-results
+          name: simple-test-results-${{ github.run_number }}
           path: |
-            cypress/screenshots
-            cypress/videos
+            cypress/screenshots/**/*
+            cypress/videos/**/*
+          if-no-files-found: ignore
 
       - name: 📋 Summary
         if: always()
         run: |
           echo "## 🎯 Simple Test Results" >> $GITHUB_STEP_SUMMARY
-          if [ $? -eq 0 ]; then
-            echo "✅ **Status**: SUCCESS" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run Number**: #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "### ✅ **Status**: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            echo "All tests completed successfully! 🎉" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **Status**: FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "### ❌ **Status**: FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "Tests failed. Check the logs above for details. 🔧" >> $GITHUB_STEP_SUMMARY
           fi
