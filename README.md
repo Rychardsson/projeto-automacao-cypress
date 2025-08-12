@@ -1,8 +1,17 @@
-# 🚀 Projeto de Automação com Cypress + SQLite
+# 🚀 Pro## 🏗️ **Tecnologias**
+
+- **Cypress** - Framework de testes E2E
+- **SQLite** - Banco de dados relacional leve
+- **Node.js + Express** - API REST
+- **HTML/CSS/JavaScript** - Interface web
+- **GitHub Actions** - CI/CD Pipeline
+- **ESLint** - Análise de códigoe Automação com Cypress + SQLite + CI/CD
+
+![CI/CD Status](https://github.com/seu-usuario/projeto-automacao-cypress/workflows/🚀%20CI/CD%20-%20Cypress%20Tests%20+%20Deploy/badge.svg)
 
 ## 🎯 **Objetivo**
 
-Demonstrar integração completa entre automação de testes com Cypress e consultas diretas em banco de dados SQLite, através de um CRUD de fornecedores.
+Demonstrar integração completa entre automação de testes com Cypress, consultas diretas em banco de dados SQLite e pipeline CI/CD automatizado, através de um CRUD de fornecedores.
 
 ## �️ **Tecnologias**
 
@@ -154,6 +163,26 @@ Banco limpo e populado antes de cada teste com dados das fixtures.
 - **API → Interface**: Mudanças via API refletem na UI
 - **Banco → Validação**: Consultas diretas confirmam alterações
 
+## 🚀 **CI/CD Pipeline**
+
+### 📋 **Overview**
+
+```
+Push/PR → Install → Setup DB → Tests → Quality → Deploy → Notify
+```
+
+### ⚡ **Features CI/CD**
+
+- 🧪 **Testes Multi-Node**: Execução em Node.js 18.x e 20.x
+- 🔍 **Quality Gates**: ESLint + Security Audit
+- 🚀 **Deploy Automático**: Para branch main
+- 📊 **Relatórios Visuais**: Summary no GitHub
+- 🎯 **Matrix Testing**: Diferentes versões e browsers
+
+### 📖 **Documentação Completa**
+
+[📋 **Guia CI/CD Detalhado**](./CI-CD.md)
+
 ## 🏆 **Resultados Demonstrados**
 
 1. **✅ CRUD Funcional** - Todas as operações funcionando
@@ -162,32 +191,40 @@ Banco limpo e populado antes de cada teste com dados das fixtures.
 4. **✅ Consultas Diretas** - Verificação no banco de dados
 5. **✅ Fixtures Inteligentes** - Dados organizados e reutilizáveis
 6. **✅ Integração Total** - UI ↔ API ↔ Banco sincronizados
+7. **✅ Pipeline CI/CD** - Automação completa com GitHub Actions
 
 ## 🚀 **Comandos Úteis**
 
 ```bash
-# Resetar banco
-npm run reset
+# Desenvolvimento
+npm run dev          # Servidor com nodemon
+npm start           # Servidor produção
+npm run setup       # Configurar banco
 
-# Iniciar servidor em modo dev
-npm run dev
+# Testes
+npm test            # Cypress interativo
+npm run test:run    # Cypress headless
+npm run ci          # Pipeline completo local
 
-# Testes específicos
+# Qualidade
+npm run lint        # Análise de código
+npm run lint:fix    # Corrigir problemas
+
+# Específicos
 npx cypress run --spec "cypress/e2e/api-fornecedores.cy.js"
 npx cypress run --spec "cypress/e2e/interface-fornecedores.cy.js"
-
-# Ver testes no navegador
-npm test
 ```
 
 ## 📈 **Métricas do Projeto**
 
-- **20+ cenários de teste** cobrindo todas as funcionalidades
+- **13 cenários de teste** cobrindo todas as funcionalidades
 - **100% das operações CRUD** testadas via API e Interface
 - **Consultas diretas no SQLite** para validação de integridade
 - **Fixtures organizadas** com dados realistas
 - **Comandos customizados** para reutilização
 - **Reset automático** garantindo isolamento dos testes
+- **Pipeline CI/CD** com matriz de testes multi-ambiente
+- **Quality Gates** com ESLint e Security Audit
 
 ---
 
@@ -198,8 +235,9 @@ npm test
 ✅ **Testes de API** - Cobertura de todas as rotas  
 ✅ **Consultas no Banco** - Verificação direta no SQLite  
 ✅ **Fixtures Inteligentes** - Dados organizados para testes
+✅ **CI/CD Pipeline** - Automação completa com GitHub Actions
 
-**Resultado:** Demonstração completa de automação integrada com banco de dados! 🚀
+**Resultado:** Demonstração completa de automação integrada com banco de dados e CI/CD! 🚀
 │ └── app.js # JavaScript frontend
 ├── server/
 │ ├── database.js # Classe para conexão SQLite
