@@ -11,9 +11,7 @@
     "test:run": "cypress run",
     "setup": "node server/database.js",
     "reset": "node server/reset-database.js",
-    "ci": "npm run setup && npm run test",
-    "lint": "eslint . --format stylish",
-    "lint:fix": "eslint . --fix"
+    "ci": "npm run setup && npm run test"
   },
   "keywords": [
     "cypress",
