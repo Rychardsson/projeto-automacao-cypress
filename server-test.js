@@ -19,9 +19,9 @@ let db;
 async function initDatabase() {
   try {
     db = new Database();
-    console.log('Database inicializado com sucesso');
+    console.log("Database inicializado com sucesso");
   } catch (error) {
-    console.error('Erro ao inicializar banco:', error);
+    console.error("Erro ao inicializar banco:", error);
     process.exit(1);
   }
 }
@@ -29,7 +29,7 @@ async function initDatabase() {
 // Middleware para verificar se DB está disponível
 function checkDb(req, res, next) {
   if (!db) {
-    return res.status(500).json({ error: 'Database não inicializado' });
+    return res.status(500).json({ error: "Database não inicializado" });
   }
   next();
 }
@@ -44,7 +44,7 @@ app.get("/api/fornecedores", checkDb, async (req, res) => {
     );
     res.json(fornecedores);
   } catch (error) {
-    console.error('Erro ao buscar fornecedores:', error);
+    console.error("Erro ao buscar fornecedores:", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -52,16 +52,15 @@ app.get("/api/fornecedores", checkDb, async (req, res) => {
 // GET - Buscar fornecedor por ID
 app.get("/api/fornecedores/:id", checkDb, async (req, res) => {
   try {
-    const fornecedor = await db.get(
-      "SELECT * FROM fornecedores WHERE id = ?",
-      [req.params.id]
-    );
+    const fornecedor = await db.get("SELECT * FROM fornecedores WHERE id = ?", [
+      req.params.id,
+    ]);
     if (!fornecedor) {
       return res.status(404).json({ error: "Fornecedor não encontrado" });
     }
     res.json(fornecedor);
   } catch (error) {
-    console.error('Erro ao buscar fornecedor:', error);
+    console.error("Erro ao buscar fornecedor:", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -69,7 +68,7 @@ app.get("/api/fornecedores/:id", checkDb, async (req, res) => {
 // Inicializar servidor
 async function startServer() {
   await initDatabase();
-  
+
   app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
     console.log(`Acesse: http://localhost:${PORT}`);
@@ -77,13 +76,13 @@ async function startServer() {
 }
 
 // Tratamento de erros não capturados
-process.on('uncaughtException', (err) => {
-  console.error('Erro não capturado:', err);
+process.on("uncaughtException", (err) => {
+  console.error("Erro não capturado:", err);
   process.exit(1);
 });
 
-process.on('unhandledRejection', (err) => {
-  console.error('Promise rejeitada:', err);
+process.on("unhandledRejection", (err) => {
+  console.error("Promise rejeitada:", err);
   process.exit(1);
 });
 
