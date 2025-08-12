@@ -1,47 +1,47 @@
 {
   "fornecedorValido": {
-    "nome": "Cypress Test LTDA",
-    "email": "cypress@test.com",
+    "nome": "Teste Fornecedor LTDA",
+    "email": "teste@fornecedor.com",
     "telefone": "(11) 99999-9999",
-    "endereco": "Rua dos Testes, 123 - São Paulo, SP",
+    "endereco": "Rua dos Testes, 123 - São Paulo/SP",
     "cnpj": "12.345.678/0001-99"
   },
   "fornecedorParaEdicao": {
-    "nome": "Fornecedor para Edição",
-    "email": "edicao@test.com",
+    "nome": "Fornecedor Original",
+    "email": "original@teste.com",
     "telefone": "(21) 88888-8888",
-    "endereco": "Av. das Alterações, 456 - Rio de Janeiro, RJ",
+    "endereco": "Av. Original, 456 - Rio de Janeiro/RJ",
     "cnpj": "98.765.432/0001-11"
   },
   "fornecedorEditado": {
     "nome": "Fornecedor Editado",
-    "email": "editado@test.com",
+    "email": "editado@teste.com",
     "telefone": "(31) 77777-7777",
-    "endereco": "Rua Modificada, 789 - Belo Horizonte, MG",
+    "endereco": "Rua Editada, 789 - Belo Horizonte/MG",
     "cnpj": "11.222.333/0001-55",
     "ativo": false
   },
-  "fornecedoresBatch": [
+  "fornecedoresLote": [
     {
-      "nome": "Fornecedor Batch 1",
-      "email": "batch1@test.com",
+      "nome": "Lote Fornecedor 1",
+      "email": "lote1@teste.com",
       "telefone": "(11) 11111-1111",
-      "endereco": "Endereço Batch 1",
-      "cnpj": "11.111.111/0001-11"
+      "endereco": "Endereço Lote 1",
+      "cnpj": "11.111.111/0001-01"
     },
     {
-      "nome": "Fornecedor Batch 2",
-      "email": "batch2@test.com",
+      "nome": "Lote Fornecedor 2",
+      "email": "lote2@teste.com",
       "telefone": "(22) 22222-2222",
-      "endereco": "Endereço Batch 2",
-      "cnpj": "22.222.222/0001-22"
+      "endereco": "Endereço Lote 2",
+      "cnpj": "22.222.222/0001-02"
     },
     {
-      "nome": "Fornecedor Batch 3",
-      "email": "batch3@test.com",
+      "nome": "Lote Fornecedor 3",
+      "email": "lote3@teste.com",
       "telefone": "(33) 33333-3333",
-      "endereco": "Endereço Batch 3",
-      "cnpj": "33.333.333/0001-33"
+      "endereco": "Endereço Lote 3",
+      "cnpj": "33.333.333/0001-03"
     }
   ],
   "fornecedorInvalido": {
