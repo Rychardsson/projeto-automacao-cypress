@@ -1,0 +1,28 @@
+{
+  "name": "projeto-automacao-cypress",
+  "version": "1.0.0",
+  "description": "Projeto de Automação com Cypress + SQLite",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "cypress open",
+    "test:headless": "cypress run",
+    "setup:db": "node server/setup-database.js",
+    "seed:db": "node server/seed-database.js"
+  },
+  "keywords": ["cypress", "automation", "sqlite", "testing"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "cypress": "^13.0.0",
+    "nodemon": "^3.0.1"
+  }
+}
