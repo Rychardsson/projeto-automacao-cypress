@@ -18,8 +18,8 @@ jobs:
       - name: 🏗️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: 📦 Install & Verify
         run: |
@@ -34,10 +34,10 @@ jobs:
           echo "Starting application server..."
           npm start &
           sleep 15
-          
+
           echo "Testing server health..."
           curl -f http://localhost:3000/api/test
-          
+
           echo "Running Cypress tests..."
           npx cypress run --browser electron
         env:

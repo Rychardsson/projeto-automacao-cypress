@@ -13,13 +13,13 @@ Demonstrar **integração completa** entre automação de testes com **Cypress**
 
 ## 🏗️ **Stack Tecnológica**
 
-| Tecnologia | Versão | Função |
-|------------|--------|--------|
-| **🧪 Cypress** | 13.17.0 | Framework de testes E2E |
-| **🗄️ SQLite** | 5.1.6 | Banco de dados relacional |
-| **⚡ Node.js** | 22.x | Runtime JavaScript |
-| **🚀 Express** | 4.18.2 | Framework web para API |
-| **🔄 GitHub Actions** | - | Pipeline CI/CD |
+| Tecnologia            | Versão  | Função                    |
+| --------------------- | ------- | ------------------------- |
+| **🧪 Cypress**        | 13.17.0 | Framework de testes E2E   |
+| **🗄️ SQLite**         | 5.1.6   | Banco de dados relacional |
+| **⚡ Node.js**        | 22.x    | Runtime JavaScript        |
+| **🚀 Express**        | 4.18.2  | Framework web para API    |
+| **🔄 GitHub Actions** | -       | Pipeline CI/CD            |
 
 ---
 
@@ -52,6 +52,7 @@ projeto-automacao-cypress/
 ## 🚀 **Quick Start**
 
 ### 1️⃣ **Clone e Instale**
+
 ```bash
 git clone https://github.com/Rychardsson/projeto-automacao-cypress.git
 cd projeto-automacao-cypress
@@ -59,6 +60,7 @@ npm install
 ```
 
 ### 2️⃣ **Configure e Execute**
+
 ```bash
 # Configurar banco de dados
 npm run setup
@@ -72,8 +74,9 @@ npm test
 ```
 
 ### 3️⃣ **Verificar**
+
 - **Interface**: http://localhost:3000
-- **API**: http://localhost:3000/api/fornecedores  
+- **API**: http://localhost:3000/api/fornecedores
 - **Testes**: Dashboard do Cypress
 
 ---
@@ -82,19 +85,19 @@ npm test
 
 ### 🔄 **CRUD de Fornecedores**
 
-| Operação | Endpoint | Método | Status |
-|----------|----------|--------|--------|
-| **Criar** | `/api/fornecedores` | POST | ✅ |
-| **Listar** | `/api/fornecedores` | GET | ✅ |
-| **Buscar** | `/api/fornecedores/:id` | GET | ✅ |
-| **Editar** | `/api/fornecedores/:id` | PUT | ✅ |
-| **Excluir** | `/api/fornecedores/:id` | DELETE | ✅ |
+| Operação    | Endpoint                | Método | Status |
+| ----------- | ----------------------- | ------ | ------ |
+| **Criar**   | `/api/fornecedores`     | POST   | ✅     |
+| **Listar**  | `/api/fornecedores`     | GET    | ✅     |
+| **Buscar**  | `/api/fornecedores/:id` | GET    | ✅     |
+| **Editar**  | `/api/fornecedores/:id` | PUT    | ✅     |
+| **Excluir** | `/api/fornecedores/:id` | DELETE | ✅     |
 
 ### 🧪 **Testes Automatizados (13 cenários)**
 
 ```
 ✅ Operações CRUD via API
-✅ Validações de entrada/saída  
+✅ Validações de entrada/saída
 ✅ Tratamento de erros (404, 400)
 ✅ Consultas diretas no SQLite
 ✅ Verificação de timestamps
@@ -106,29 +109,33 @@ npm test
 ## 🎯 **Diferenciais Únicos**
 
 ### 🔍 **Consultas Diretas no Banco**
+
 ```javascript
 // Validação direta no SQLite via Cypress
-cy.queryDatabase("SELECT * FROM fornecedores WHERE id = ?", [id])
-  .then((result) => {
+cy.queryDatabase("SELECT * FROM fornecedores WHERE id = ?", [id]).then(
+  (result) => {
     expect(result[0].nome).to.eq("Nome Esperado");
     expect(result[0].updated_at).to.not.equal(result[0].created_at);
-  });
+  }
+);
 ```
 
 ### 🔧 **Comandos Customizados**
+
 ```javascript
 // Comandos específicos do projeto
-cy.resetDatabase();           // Limpa banco
-cy.seedDatabase();            // Popula dados
+cy.resetDatabase(); // Limpa banco
+cy.seedDatabase(); // Popula dados
 cy.queryDatabase(sql, params); // SQL direto
 ```
 
 ### 📊 **Fixtures Organizadas**
+
 ```json
 {
   "fornecedorValido": {
     "nome": "Empresa Teste LTDA",
-    "email": "contato@empresa.com", 
+    "email": "contato@empresa.com",
     "telefone": "(11) 99999-9999"
   }
 }
@@ -139,13 +146,15 @@ cy.queryDatabase(sql, params); // SQL direto
 ## 🚀 **CI/CD Pipeline**
 
 ### ⚡ **GitHub Actions**
+
 ```
 Push → Install → Setup DB → Tests → Reports
 ```
 
 **Execução automática:**
+
 - ✅ Instala dependências
-- ✅ Configura banco SQLite  
+- ✅ Configura banco SQLite
 - ✅ Inicia servidor Express
 - ✅ Executa 13 testes Cypress
 - ✅ Gera relatórios visuais
@@ -155,16 +164,18 @@ Push → Install → Setup DB → Tests → Reports
 ## 📊 **Resultados**
 
 ### 🏆 **Métricas Atuais**
+
 ```
 ✅ Testes: 13/13 (100% passando)
-✅ Tempo: ~3-4 segundos  
+✅ Tempo: ~3-4 segundos
 ✅ Cobertura CRUD: 100%
 ✅ CI/CD: Funcionando
 ```
 
 ### 📈 **Cobertura**
+
 - **CRUD**: 5/5 operações testadas
-- **API**: 8/8 endpoints validados  
+- **API**: 8/8 endpoints validados
 - **Banco**: Integração completa
 - **Erros**: Cenários cobertos
 
@@ -173,6 +184,7 @@ Push → Install → Setup DB → Tests → Reports
 ## 🛠️ **Comandos**
 
 ### 📦 **Desenvolvimento**
+
 ```bash
 npm start           # Servidor
 npm run dev         # Auto-reload
@@ -181,6 +193,7 @@ npm run reset       # Reset banco
 ```
 
 ### 🧪 **Testes**
+
 ```bash
 npm test            # Headless
 npm run test:open   # Interativo
@@ -188,11 +201,12 @@ npm run ci          # Pipeline local
 ```
 
 ### 🔍 **Debug**
+
 ```bash
 # API manual
 curl http://localhost:3000/api/fornecedores
 
-# Teste específico  
+# Teste específico
 npx cypress run --spec "cypress/e2e/api-fornecedores.cy.js"
 ```
 
@@ -200,27 +214,29 @@ npx cypress run --spec "cypress/e2e/api-fornecedores.cy.js"
 
 ## 🎯 **Objetivos Alcançados**
 
-| Objetivo | Status | Implementação |
-|----------|--------|---------------|
-| **CRUD Simples** | ✅ **100%** | Sistema completo |
-| **Testes Interface** | ✅ **100%** | Cypress UI |
-| **Testes API** | ✅ **100%** | 13 cenários |
-| **Consultas Diretas** | ✅ **100%** | Plugin SQLite |
-| **Dados Fixture** | ✅ **100%** | Sistema organizado |
-| **CI/CD Pipeline** | ✅ **BÔNUS** | GitHub Actions |
+| Objetivo              | Status       | Implementação      |
+| --------------------- | ------------ | ------------------ |
+| **CRUD Simples**      | ✅ **100%**  | Sistema completo   |
+| **Testes Interface**  | ✅ **100%**  | Cypress UI         |
+| **Testes API**        | ✅ **100%**  | 13 cenários        |
+| **Consultas Diretas** | ✅ **100%**  | Plugin SQLite      |
+| **Dados Fixture**     | ✅ **100%**  | Sistema organizado |
+| **CI/CD Pipeline**    | ✅ **BÔNUS** | GitHub Actions     |
 
 ---
 
 ## 🏅 **Diferenciais**
 
 ### 🌟 **Técnicos**
+
 - **🔗 Integração Real**: UI → API → Banco → Validação
 - **🔧 Comandos Específicos**: Cypress otimizado
-- **📊 Dados Inteligentes**: Fixtures por cenário  
+- **📊 Dados Inteligentes**: Fixtures por cenário
 - **🗄️ SQL Direto**: Validação no banco
 - **🔄 Reset Automático**: Isolamento perfeito
 
-### 🎯 **Metodológicos**  
+### 🎯 **Metodológicos**
+
 - **📈 Cobertura Total**: 100% funcionalidades
 - **⚡ Execução Rápida**: ~3s otimizados
 - **🚀 CI/CD Pro**: Pipeline automatizado
@@ -234,6 +250,7 @@ npx cypress run --spec "cypress/e2e/api-fornecedores.cy.js"
 ### 🚨 **Problemas Comuns**
 
 #### **CI/CD Falhando**
+
 ```bash
 # Verificar se o servidor está respondendo
 curl -f http://localhost:3000/api/test
@@ -247,6 +264,7 @@ npx cypress run --browser electron
 ```
 
 #### **Testes Locais Falhando**
+
 ```bash
 # 1. Reinstalar dependências
 rm -rf node_modules package-lock.json
@@ -261,6 +279,7 @@ npm run setup
 ```
 
 #### **Servidor não Inicia**
+
 ```bash
 # Verificar porta em uso
 netstat -tulpn | grep :3000
@@ -273,6 +292,7 @@ npm start
 ```
 
 #### **Database Corrupto**
+
 ```bash
 # Deletar e recriar
 rm database.sqlite
@@ -295,7 +315,7 @@ npm run setup
 
 ✅ **Automação Cypress** + **Banco SQLite**  
 ✅ **CRUD funcional** + **API REST**  
-✅ **Pipeline CI/CD** + **Documentação**  
+✅ **Pipeline CI/CD** + **Documentação**
 
 **Resultado:** Referência prática para testes integrados! 🚀
 
@@ -304,7 +324,7 @@ npm run setup
 ## 📞 **Info**
 
 - **👨‍💻 Dev**: Rychardsson
-- **📅 Data**: Agosto 2025  
+- **📅 Data**: Agosto 2025
 - **⚡ Versão**: 1.0.0
 - **📄 Licença**: MIT
 
