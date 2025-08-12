@@ -1,8 +1,8 @@
-const Database = require('./database');
+const Database = require("./database");
 
 async function setupDatabase() {
   const db = new Database();
-  
+
   try {
     // Criar tabela de fornecedores
     await db.run(`
@@ -19,10 +19,9 @@ async function setupDatabase() {
       )
     `);
 
-    console.log('Tabela fornecedores criada com sucesso!');
-    
+    console.log("Tabela fornecedores criada com sucesso!");
   } catch (error) {
-    console.error('Erro ao criar tabelas:', error);
+    console.error("Erro ao criar tabelas:", error);
   } finally {
     await db.close();
   }

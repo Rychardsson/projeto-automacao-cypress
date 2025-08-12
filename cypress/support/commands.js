@@ -9,50 +9,50 @@
 // ***********************************************
 
 // Comando para acessar o banco de dados SQLite
-Cypress.Commands.add('queryDatabase', (query, parameters = []) => {
-  return cy.task('queryDb', { query, parameters })
-})
+Cypress.Commands.add("queryDatabase", (query, parameters = []) => {
+  return cy.task("queryDb", { query, parameters });
+});
 
 // Comando para resetar o banco de dados
-Cypress.Commands.add('resetDatabase', () => {
-  return cy.request('POST', `${Cypress.env('apiUrl')}/reset-database`)
-})
+Cypress.Commands.add("resetDatabase", () => {
+  return cy.request("POST", `${Cypress.env("apiUrl")}/reset-database`);
+});
 
 // Comando para popular dados de teste
-Cypress.Commands.add('seedDatabase', () => {
-  return cy.request('POST', `${Cypress.env('apiUrl')}/seed-database`)
-})
+Cypress.Commands.add("seedDatabase", () => {
+  return cy.request("POST", `${Cypress.env("apiUrl")}/seed-database`);
+});
 
 // Comando para criar fornecedor via API
-Cypress.Commands.add('criarFornecedor', (fornecedor) => {
+Cypress.Commands.add("criarFornecedor", (fornecedor) => {
   return cy.request({
-    method: 'POST',
-    url: `${Cypress.env('apiUrl')}/fornecedores`,
-    body: fornecedor
-  })
-})
+    method: "POST",
+    url: `${Cypress.env("apiUrl")}/fornecedores`,
+    body: fornecedor,
+  });
+});
 
 // Comando para buscar fornecedor por ID via API
-Cypress.Commands.add('buscarFornecedor', (id) => {
+Cypress.Commands.add("buscarFornecedor", (id) => {
   return cy.request({
-    method: 'GET',
-    url: `${Cypress.env('apiUrl')}/fornecedores/${id}`
-  })
-})
+    method: "GET",
+    url: `${Cypress.env("apiUrl")}/fornecedores/${id}`,
+  });
+});
 
 // Comando para atualizar fornecedor via API
-Cypress.Commands.add('atualizarFornecedor', (id, dados) => {
+Cypress.Commands.add("atualizarFornecedor", (id, dados) => {
   return cy.request({
-    method: 'PUT',
-    url: `${Cypress.env('apiUrl')}/fornecedores/${id}`,
-    body: dados
-  })
-})
+    method: "PUT",
+    url: `${Cypress.env("apiUrl")}/fornecedores/${id}`,
+    body: dados,
+  });
+});
 
 // Comando para excluir fornecedor via API
-Cypress.Commands.add('excluirFornecedor', (id) => {
+Cypress.Commands.add("excluirFornecedor", (id) => {
   return cy.request({
-    method: 'DELETE',
-    url: `${Cypress.env('apiUrl')}/fornecedores/${id}`
-  })
-})
+    method: "DELETE",
+    url: `${Cypress.env("apiUrl")}/fornecedores/${id}`,
+  });
+});

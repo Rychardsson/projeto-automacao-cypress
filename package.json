@@ -11,7 +11,12 @@
     "setup:db": "node server/setup-database.js",
     "seed:db": "node server/seed-database.js"
   },
-  "keywords": ["cypress", "automation", "sqlite", "testing"],
+  "keywords": [
+    "cypress",
+    "automation",
+    "sqlite",
+    "testing"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
