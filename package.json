@@ -9,10 +9,10 @@
     "test": "cypress run",
     "test:open": "cypress open",
     "test:run": "cypress run",
-  "setup": "node server/setup-database.js",
+    "setup": "node server/setup-database.js",
     "reset": "node server/reset-database.js",
-  "ci": "npm run setup && npm run test",
-  "prestart": "node server/setup-database.js"
+    "ci": "npm run setup && npm run test",
+    "prestart": "node server/setup-database.js"
   },
   "keywords": [
     "cypress",

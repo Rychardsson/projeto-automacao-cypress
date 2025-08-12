@@ -11,11 +11,14 @@ class Database {
       } else {
         console.log("Conectado ao banco SQLite");
         // Ajustes para ambiente CI: melhorar concorrência e evitar locks
-        this.db.exec("PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; PRAGMA synchronous=NORMAL;", (e) => {
-          if (e) {
-            console.warn("Aviso ao aplicar PRAGMAs SQLite:", e.message);
+        this.db.exec(
+          "PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; PRAGMA synchronous=NORMAL;",
+          (e) => {
+            if (e) {
+              console.warn("Aviso ao aplicar PRAGMAs SQLite:", e.message);
+            }
           }
-        });
+        );
       }
     });
   }
