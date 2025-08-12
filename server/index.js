@@ -136,6 +136,15 @@ app.delete("/api/fornecedores/:id", async (req, res) => {
 
 // Rotas utilitárias para testes
 
+// GET - Endpoint de health check para CI/CD
+app.get("/api/test", (req, res) => {
+  res.json({
+    message: "Servidor funcionando",
+    status: "OK",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // POST - Resetar banco de dados
 app.post("/api/reset", async (req, res) => {
   try {
