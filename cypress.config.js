@@ -1,10 +1,16 @@
 const { defineConfig } = require('cypress')
+const { queryDb } = require('./cypress/plugins/database')
 
 module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      // Plugin para executar queries no banco de dados
+      on('task', {
+        queryDb: ({ query, parameters }) => {
+          return queryDb(query, parameters)
+        }
+      })
     },
     env: {
       apiUrl: 'http://localhost:3000/api'
