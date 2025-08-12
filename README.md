@@ -229,6 +229,66 @@ npx cypress run --spec "cypress/e2e/api-fornecedores.cy.js"
 
 ---
 
+## 🔧 **Troubleshooting**
+
+### 🚨 **Problemas Comuns**
+
+#### **CI/CD Falhando**
+```bash
+# Verificar se o servidor está respondendo
+curl -f http://localhost:3000/api/test
+
+# Aumentar timeout no cypress.config.js
+defaultCommandTimeout: 15000
+pageLoadTimeout: 120000
+
+# Usar browser electron no CI
+npx cypress run --browser electron
+```
+
+#### **Testes Locais Falhando**
+```bash
+# 1. Reinstalar dependências
+rm -rf node_modules package-lock.json
+npm install
+
+# 2. Verificar Cypress
+npx cypress verify
+npx cypress info
+
+# 3. Reset do banco
+npm run setup
+```
+
+#### **Servidor não Inicia**
+```bash
+# Verificar porta em uso
+netstat -tulpn | grep :3000
+
+# Matar processo na porta
+sudo kill -9 $(lsof -t -i:3000)
+
+# Reiniciar servidor
+npm start
+```
+
+#### **Database Corrupto**
+```bash
+# Deletar e recriar
+rm database.sqlite
+npm run setup
+```
+
+### ⚡ **Dicas de Performance**
+
+1. **CI Timeout**: Aumentar para 15-20min em workflows complexos
+2. **Browser**: Electron é mais estável que Chrome no CI
+3. **Wait-on**: Usar 120s+ para aguardar servidor
+4. **Videos**: Desabilitar em ambiente local (`video: false`)
+5. **Screenshots**: Manter apenas em falhas
+
+---
+
 ## 🎉 **Conclusão**
 
 **Demonstração completa** de integração entre:

@@ -11,7 +11,10 @@
     "test:run": "cypress run",
     "setup": "node server/database.js",
     "reset": "node server/reset-database.js",
-    "ci": "npm run setup && npm run test"
+    "ci": "npm run setup && npm run test",
+    "ci:start": "node server/index.js",
+    "ci:test": "cypress run --config baseUrl=http://localhost:3000 --browser electron",
+    "ci:full": "npm run setup && node scripts/ci-test.js"
   },
   "keywords": [
     "cypress",

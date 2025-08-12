@@ -8,11 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Job 1: Testes Cypress
   cypress-tests:
     name: 🧪 Cypress E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: 📥 Checkout Repository
@@ -21,62 +20,126 @@ jobs:
       - name: 🏗️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Install Dependencies
         run: |
           npm ci
           npx cypress verify
+          npx cypress version
 
       - name: 🗄️ Setup Database
-        run: npm run setup
-
-      - name: 🔍 Debug Environment
         run: |
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          echo "Project files:"
-          ls -la
-          echo "Database file:"
-          ls -la database.sqlite || echo "Database not found"
+          npm run setup
+          echo "✅ Database setup completed"
+          ls -la database.sqlite
 
-      - name: 🧪 Run Cypress Tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm start
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 120
-          browser: electron
-          record: false
-          spec: cypress/e2e/**/*.cy.js
+      - name: 🔍 Environment Debug
+        run: |
+          echo "=== System Information ==="
+          echo "Node: $(node --version)"
+          echo "NPM: $(npm --version)"
+          echo "OS: $(uname -a)"
+          echo ""
+          echo "=== Project Files ==="
+          ls -la
+          echo ""
+          echo "=== Cypress Info ==="
+          npx cypress info
+          echo ""
+          echo "=== Database Check ==="
+          file database.sqlite || echo "Database file not found"
+
+      - name: 🚀 Start Application Server
+        run: |
+          echo "🌐 Starting server..."
+          npm start &
+          APP_PID=$!
+          echo "📝 Server PID: $APP_PID"
+          echo $APP_PID > /tmp/server.pid
+          
+          echo "⏳ Waiting for server to initialize..."
+          sleep 10
+          
+          echo "🔍 Testing server connectivity..."
+          for i in {1..30}; do
+            if curl -f http://localhost:3000/api/test >/dev/null 2>&1; then
+              echo "✅ Server is responding at attempt $i"
+              break
+            else
+              echo "❌ Attempt $i/30 failed, retrying in 2s..."
+              sleep 2
+            fi
+          done
+          
+          echo "🧪 Final server test..."
+          curl -f http://localhost:3000/api/test || {
+            echo "💥 ERROR: Server is not responding"
+            exit 1
+          }
+          
+          echo "🎉 Server is ready for testing!"
+
+      - name: 🧪 Execute Cypress Tests
+        run: |
+          echo "🚀 Starting Cypress test execution..."
+          npx cypress run \
+            --config baseUrl=http://localhost:3000 \
+            --browser electron \
+            --spec "cypress/e2e/**/*.cy.js" \
+            --reporter spec \
+            --reporter-options "verbose=true"
         env:
           CYPRESS_baseUrl: http://localhost:3000
+          CYPRESS_defaultCommandTimeout: 10000
+          CYPRESS_requestTimeout: 5000
+          CYPRESS_responseTimeout: 30000
 
-      - name: 📊 Upload Test Results
+      - name: � Cleanup Server
+        if: always()
+        run: |
+          if [ -f /tmp/server.pid ]; then
+            APP_PID=$(cat /tmp/server.pid)
+            echo "🛑 Stopping server (PID: $APP_PID)..."
+            kill $APP_PID 2>/dev/null || echo "Server process already terminated"
+            rm -f /tmp/server.pid
+          else
+            echo "⚠️ Server PID file not found"
+          fi
+
+      - name: �📊 Upload Test Artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-results
+          name: cypress-test-results-${{ github.run_number }}
           path: |
             cypress/screenshots
             cypress/videos
-          retention-days: 7
+          retention-days: 30
 
-      - name: 📈 Test Summary
+      - name: 📈 Test Results Summary
         if: always()
         run: |
           echo "## 🧪 Cypress Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" == "success" ]; then
-            echo "✅ All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+            echo "### ✅ Status: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            echo "All Cypress tests executed successfully!" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ Some tests failed. Check artifacts for details." >> $GITHUB_STEP_SUMMARY
+            echo "### ❌ Status: FAILURE" >> $GITHUB_STEP_SUMMARY
+            echo "Some tests failed. Check the artifacts for detailed screenshots and videos." >> $GITHUB_STEP_SUMMARY
           fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**📊 Run Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Run Number: #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
 
-  # Job 2: Quality Checks
-  quality-checks:
-    name: 🔍 Quality Checks
+  quality-audit:
+    name: 🔍 Security & Quality
     runs-on: ubuntu-latest
+    needs: cypress-tests
     if: always()
 
     steps:
@@ -86,42 +149,55 @@ jobs:
       - name: 🏗️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Install Dependencies
         run: npm ci
 
       - name: 🛡️ Security Audit
-        run: npm audit --audit-level high || echo "⚠️ Security warnings found but not blocking"
-
-      - name: 📊 Project Analysis
         run: |
-          echo "## 📦 Project Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "- **Dependencies**: $(npm list --depth=0 2>/dev/null | wc -l) packages" >> $GITHUB_STEP_SUMMARY
-          echo "- **Project size**: $(du -sh . --exclude=node_modules | cut -f1)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Test files**: $(find cypress/e2e -name '*.cy.js' | wc -l) specs" >> $GITHUB_STEP_SUMMARY
+          echo "🔍 Running security audit..."
+          npm audit --audit-level moderate || echo "⚠️ Security warnings detected but not blocking CI"
 
-  # Job 3: Build Status
-  build-status:
-    name: 📋 Build Status
+      - name: 📊 Project Metrics
+        run: |
+          echo "## � Project Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Dependencies | $(npm list --depth=0 --json 2>/dev/null | jq '.dependencies | length' 2>/dev/null || echo 'N/A') |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Test Files | $(find cypress/e2e -name '*.cy.js' | wc -l) |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📁 Project Size | $(du -sh . --exclude=node_modules | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🗄️ Database Size | $(ls -lh database.sqlite 2>/dev/null | awk '{print $5}' || echo 'N/A') |" >> $GITHUB_STEP_SUMMARY
+
+  final-status:
+    name: 📋 Pipeline Status
     runs-on: ubuntu-latest
-    needs: [cypress-tests, quality-checks]
+    needs: [cypress-tests, quality-audit]
     if: always()
 
     steps:
-      - name: 📊 Final Summary
+      - name: 📊 Pipeline Summary
         run: |
-          echo "## 🎯 CI/CD Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎯 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Cypress Tests | ${{ needs.cypress-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Quality Checks | ${{ needs.quality-checks.result == 'success' && '✅ Passed' || '⚠️ With Warnings' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Cypress Tests | ${{ needs.cypress-tests.result == 'success' && '✅ PASSED' || '❌ FAILED' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Quality Audit | ${{ needs.quality-audit.result == 'success' && '✅ PASSED' || '⚠️ WITH WARNINGS' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📋 Quick Info" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Build Information" >> $GITHUB_STEP_SUMMARY
           echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Event**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Actor**: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run ID**: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.cypress-tests.result }}" == "success" ]]; then
+            echo "### 🎉 **PIPELINE STATUS: SUCCESS**" >> $GITHUB_STEP_SUMMARY
+            echo "All tests passed! The application is ready for deployment. 🚀" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### 🚨 **PIPELINE STATUS: FAILED**" >> $GITHUB_STEP_SUMMARY
+            echo "Tests failed. Please check the test artifacts and fix issues before merging. 🔧" >> $GITHUB_STEP_SUMMARY
+          fi
