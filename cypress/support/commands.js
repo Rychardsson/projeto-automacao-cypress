@@ -64,3 +64,21 @@ Cypress.Commands.add("excluirFornecedor", (id) => {
     url: `${Cypress.env("apiUrl")}/fornecedores/${id}`,
   });
 });
+
+// Comandos para testes de erro (permitem falhas de status)
+Cypress.Commands.add("buscarFornecedorComErro", (id) => {
+  return cy.request({
+    method: "GET",
+    url: `${Cypress.env("apiUrl")}/fornecedores/${id}`,
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add("criarFornecedorComErro", (fornecedor) => {
+  return cy.request({
+    method: "POST",
+    url: `${Cypress.env("apiUrl")}/fornecedores`,
+    body: fornecedor,
+    failOnStatusCode: false,
+  });
+});

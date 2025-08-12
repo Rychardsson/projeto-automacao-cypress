@@ -83,7 +83,7 @@ describe("API de Fornecedores - CRUD + Integração com Banco", () => {
           });
 
           // Verificar se foi realmente excluído
-          cy.buscarFornecedor(id).then((response) => {
+          cy.buscarFornecedorComErro(id).then((response) => {
             expect(response.status).to.eq(404);
           });
         });
@@ -93,7 +93,7 @@ describe("API de Fornecedores - CRUD + Integração com Banco", () => {
 
   describe("Validações de API", () => {
     it("Deve retornar erro 404 para fornecedor inexistente", () => {
-      cy.buscarFornecedor(999999).then((response) => {
+      cy.buscarFornecedorComErro(999999).then((response) => {
         expect(response.status).to.eq(404);
         expect(response.body.error).to.include("não encontrado");
       });
@@ -101,7 +101,7 @@ describe("API de Fornecedores - CRUD + Integração com Banco", () => {
 
     it("Deve retornar erro ao criar fornecedor com dados inválidos", () => {
       cy.fixture("fornecedores").then((data) => {
-        cy.criarFornecedor(data.fornecedorInvalido).then((response) => {
+        cy.criarFornecedorComErro(data.fornecedorInvalido).then((response) => {
           expect(response.status).to.eq(400);
           expect(response.body.error).to.include("obrigatórios");
         });
@@ -113,7 +113,7 @@ describe("API de Fornecedores - CRUD + Integração com Banco", () => {
         // Criar primeiro fornecedor
         cy.criarFornecedor(data.fornecedorValido).then(() => {
           // Tentar criar outro com mesmo email
-          cy.criarFornecedor(data.fornecedorValido).then((response) => {
+          cy.criarFornecedorComErro(data.fornecedorValido).then((response) => {
             expect(response.status).to.eq(400);
             expect(response.body.error).to.include("já está em uso");
           });
@@ -146,6 +146,9 @@ describe("API de Fornecedores - CRUD + Integração com Banco", () => {
       cy.fixture("fornecedores").then((data) => {
         cy.criarFornecedor(data.fornecedorParaEdicao).then((createResponse) => {
           const id = createResponse.body.id;
+
+          // Pequeno delay para garantir que o updated_at seja diferente
+          cy.wait(1000);
 
           cy.atualizarFornecedor(id, data.fornecedorEditado).then(() => {
             // Verificar no banco se foi atualizado
