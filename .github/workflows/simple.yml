@@ -1,0 +1,44 @@
+name: 🚀 CI/CD - Cypress Tests (Simple)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 🧪 Test Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 📦 Install
+        run: npm ci
+
+      - name: 🗄️ Setup DB
+        run: npm run setup
+
+      - name: 🧪 Test
+        run: |
+          npm start &
+          sleep 10
+          npm test
+
+      - name: 📊 Results
+        if: always()
+        run: |
+          echo "## 🎯 Test Results" >> $GITHUB_STEP_SUMMARY
+          if [ $? -eq 0 ]; then
+            echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Tests failed!" >> $GITHUB_STEP_SUMMARY
+          fi

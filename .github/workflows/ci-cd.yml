@@ -12,6 +12,7 @@ jobs:
   cypress-tests:
     name: 🧪 Cypress E2E Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: 📥 Checkout Repository
@@ -24,33 +25,53 @@ jobs:
           cache: "npm"
 
       - name: 📦 Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npx cypress verify
 
       - name: 🗄️ Setup Database
         run: npm run setup
+
+      - name: 🔍 Debug Environment
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Project files:"
+          ls -la
+          echo "Database file:"
+          ls -la database.sqlite || echo "Database not found"
 
       - name: 🧪 Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           start: npm start
           wait-on: "http://localhost:3000"
-          wait-on-timeout: 60
-          browser: chrome
+          wait-on-timeout: 120
+          browser: electron
           record: false
+          spec: cypress/e2e/**/*.cy.js
+        env:
+          CYPRESS_baseUrl: http://localhost:3000
 
       - name: 📊 Upload Test Results
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
-          name: cypress-screenshots
-          path: cypress/screenshots
+          name: cypress-results
+          path: |
+            cypress/screenshots
+            cypress/videos
           retention-days: 7
 
       - name: 📈 Test Summary
         if: always()
         run: |
           echo "## 🧪 Cypress Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Tests completed successfully!" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some tests failed. Check artifacts for details." >> $GITHUB_STEP_SUMMARY
+          fi
 
   # Job 2: Quality Checks
   quality-checks:
