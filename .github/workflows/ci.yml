@@ -14,17 +14,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - run: npm ci
       - run: npm run setup
-      
+
       - name: Start server and run tests
         run: |
           npm start &
-          sleep 20
+          sleep 30
           npm test
